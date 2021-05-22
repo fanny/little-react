@@ -1,20 +1,32 @@
-function render(element, container){
-  const rootNode = 
-    element.type == 'TEXT_ELEMENT'
-    ? document.createTextNode('')
-    : document.createElement(element.type);
-  
-  const isProperty = key => key !== 'children';
-  Object.keys(element.props)
-    .filter(isProperty)
-    .forEach(prop => {
-      rootNode[prop] = element.props[prop] 
-    });
+const reactDom = require("./reactDomComponent");
+const { workLoop } = require("./scheduler");
 
-  element.props.children.forEach((child) => render(child, rootNode));
-  container.appendChild(rootNode);
+var nextUnitOfWork = null
+var currentRoot = null
+var workInProgressRoot = null
+var deletions = null
+
+function render(element, container){
+  workInProgressRoot = {
+    dom: container,
+    props: {
+      children: [element]
+    },
+    alternate: currentRoot //old-fiber
+  }
+  deletions = []
+  nextUnitOfWork = workInProgressRoot
+  requestIdleCallback(
+    workLoop(
+      workInProgressRoot,
+      deletions,
+      nextUnitOfWork,
+      currentRoot
+    )
+  );
 }
 
 module.exports = {
+  ...reactDom,
   render
 }

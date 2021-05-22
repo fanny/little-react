@@ -8,5 +8,6 @@ const element = (
     <h2 style="text-align:right">from MiniReact</h2>
   </div>
 );
+
 const container = document.getElementById('root');
 ReactDOM.render(element, container);
