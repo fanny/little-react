@@ -1,55 +1,45 @@
+const {
+  EFFECT_TAG_DELETION
+} = require('./effects');
+const {
+  createFiberInsert,
+  createFiberUpdate,
+} = require('./fiber');
+
 function reconcilerChildren(workInProgressFiber, elements, deletions){
-  let index = 0;
   let oldFiber = 
     workInProgressFiber.alternate && workInProgressFiber.alternate.child;
   let prevSibling = null;
+  const isFirst = (index) => index == 0
 
-  while(index < elements.length || oldFiber != null) {
-    const element = elements[index];
-    let newFiber = null;
-
-    const sameType = oldFiber && element && element.type === oldFiber.type;
-
+  elements.forEach((element, index) => {
+    let newFiber = null
+    const sameType = 
+      oldFiber && element && element.type === oldFiber.type;
     if (sameType) {
-      newFiber = {
-        type: oldFiber.type,
-        props: element.props,
-        parent: workInProgressFiber,
-        dom: oldFiber.parent,
-        alternate: oldFiber,
-        effectTag: 'UPDATE'
-      }
+      newFiber = createFiberUpdate(oldFiber, element, workInProgressFiber)
     }
 
     if (element && !sameType) {
-      newFiber = {
-        type: element.type,
-        props: element.props,
-        parent: workInProgressFiber,
-        dom: null,
-        alternate: null,
-        effectTag: 'PLACEMENT'
-      }
+      newFiber = createFiberInsert(element, workInProgressFiber)
     }
 
     if (oldFiber && !sameType) {
-      oldFiber.effectTag = 'DELETION'
+      oldFiber.effectTag = EFFECT_TAG_DELETION
       deletions.push(oldFiber)
     }
 
-    if(oldFiber) {
-      oldFiber = oldFiber.sibling;
-    }
-
-    if(index === 0){
+    if(isFirst(index)){
       workInProgressFiber.child = newFiber
-    } else{
+    } else {
       prevSibling.sibling = newFiber
     }
 
     prevSibling = newFiber
-    index++
-  }
+    if(oldFiber) {
+      oldFiber = oldFiber.sibling;
+    }
+  });
 }
 
 module.exports = {

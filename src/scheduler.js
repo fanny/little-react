@@ -23,13 +23,15 @@ function workLoop(
 }
 
 function performUnitOfWork(fiber, deletions) {
-  if(!fiber.dom){
-    fiber.dom = createDom(fiber);
+  const isFunctionComponent = 
+    fiber.type instanceof Function
+  
+  if(isFunctionComponent) {
+    updateFunctionComponent(fiber, deletions);
+  } else{
+    updateHostComponent(fiber, deletions)
   }
-  
-  const elements = fiber.props.children;
-  reconcilerChildren(fiber, elements, deletions);
-  
+
   if (fiber.child) {
     return fiber.child
   }
@@ -40,6 +42,23 @@ function performUnitOfWork(fiber, deletions) {
     }
     nextFiber = nextFiber.parent
   }
+}
+
+function updateFunctionComponent(fiber, deletions) {
+  const children = [fiber.type(fiber.props)]
+  reconcilerChildren(fiber, children, deletions)
+}
+
+function updateHostComponent(fiber, deletions) {
+  if(!fiber.dom){
+    fiber.dom = createDom(fiber);
+  }
+
+  reconcilerChildren(
+    fiber, 
+    fiber.props.children, 
+    deletions
+  );
 }
 
 module.exports = {
