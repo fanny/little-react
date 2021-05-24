@@ -1,10 +1,11 @@
 const reactDom = require("./reactDomComponent");
-const { workLoop } = require("./scheduler");
+const { createSchedulerEngineInstance, getSchedulerEngineInstance } = require("./reactSchedulerEngine");
+const { performUnitOfWork } = require("./scheduler");
 
-var nextUnitOfWork = null
-var currentRoot = null
-var workInProgressRoot = null
-var deletions = null
+let currentRoot = null
+let workInProgressRoot = null
+
+createSchedulerEngineInstance();
 
 function render(element, container){
   workInProgressRoot = {
@@ -12,18 +13,13 @@ function render(element, container){
     props: {
       children: [element]
     },
-    alternate: currentRoot //old-fiber
+    alternate: currentRoot,
+    effects: [] //old-fiber
   }
-  deletions = []
-  nextUnitOfWork = workInProgressRoot
-  requestIdleCallback(
-    workLoop(
-      workInProgressRoot,
-      deletions,
-      nextUnitOfWork,
-      currentRoot
-    )
-  );
+  
+  const scheduler = getSchedulerEngineInstance();
+  scheduler.setNextUnitOfWork(workInProgressRoot);
+  scheduler.jobMultipleRunner(performUnitOfWork, currentRoot);
 }
 
 module.exports = {

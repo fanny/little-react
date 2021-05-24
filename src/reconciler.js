@@ -6,7 +6,7 @@ const {
   createFiberUpdate,
 } = require('./fiber');
 
-function reconcilerChildren(workInProgressFiber, elements, deletions){
+function reconcilerChildren(workInProgressFiber, elements){
   let oldFiber = 
     workInProgressFiber.alternate && workInProgressFiber.alternate.child;
   let prevSibling = null;
@@ -26,7 +26,8 @@ function reconcilerChildren(workInProgressFiber, elements, deletions){
 
     if (oldFiber && !sameType) {
       oldFiber.effectTag = EFFECT_TAG_DELETION
-      deletions.push(oldFiber)
+      workInProgressFiber.effects = workInProgressFiber.effects || []
+      workInProgressFiber.effects.push(oldFiber);
     }
 
     if(isFirst(index)){

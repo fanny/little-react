@@ -2,41 +2,23 @@ const { createDom } = require("./reactDomComponent");
 const { commitRoot } = require("./commit");
 const { reconcilerChildren } = require("./reconciler");
 
-function workLoop(
-  workInProgressRoot,
-  deletions,
-  nextUnitOfWork,
-  currentRoot
-) {
-  return function workLoopHelper(deadline){
-    let shouldYield = false
-    while(nextUnitOfWork && !shouldYield){
-      nextUnitOfWork = performUnitOfWork(nextUnitOfWork, deletions)
-      shouldYield = deadline.timeRemaining() < 1
-    }
-
-    if(!nextUnitOfWork && workInProgressRoot){
-      commitRoot(workInProgressRoot, deletions, currentRoot)
-    }
-    requestIdleCallback(workLoopHelper);
-  }
-}
-
-function performUnitOfWork(fiber, deletions) {
+function performUnitOfWork(fiber, currentRoot) {
   const isFunctionComponent = 
     fiber.type instanceof Function
   
   if(isFunctionComponent) {
-    updateFunctionComponent(fiber, deletions);
+    updateFunctionComponent(fiber)
   } else{
-    updateHostComponent(fiber, deletions)
+    updateHostComponent(fiber)
   }
 
   if (fiber.child) {
     return fiber.child
   }
+
   let nextFiber = fiber
   while(nextFiber) {
+    commitRoot(nextFiber, currentRoot)
     if (nextFiber.sibling) {
       return nextFiber.sibling
     }
@@ -44,24 +26,19 @@ function performUnitOfWork(fiber, deletions) {
   }
 }
 
-function updateFunctionComponent(fiber, deletions) {
+function updateFunctionComponent(fiber) {
   const children = [fiber.type(fiber.props)]
-  reconcilerChildren(fiber, children, deletions)
+  reconcilerChildren(fiber, children)
 }
 
-function updateHostComponent(fiber, deletions) {
+function updateHostComponent(fiber) {
   if(!fiber.dom){
     fiber.dom = createDom(fiber);
   }
-
-  reconcilerChildren(
-    fiber, 
-    fiber.props.children, 
-    deletions
-  );
+  reconcilerChildren(fiber, fiber.props.children);
 }
 
 module.exports = {
-  workLoop,
+  performUnitOfWork
 }
 

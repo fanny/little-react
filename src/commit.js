@@ -5,11 +5,11 @@ const {
   EFFECT_TAG_DELETION
 } = require('./effects');
 
-function commitRoot(workInProgressRoot, deletions, currentRoot) {
-  deletions.forEach(commitWork)
-  commitWork(workInProgressRoot.child)
-  currentRoot = workInProgressRoot
-  workInProgressRoot = null
+function commitRoot(fiber, currentRoot) {
+  fiber.effects.forEach(commitWork)
+  commitWork(fiber.child)
+  currentRoot = fiber
+  fiber = null
 }
 
 function commitWork(fiber) {
@@ -22,7 +22,6 @@ function commitWork(fiber) {
   }
   const domParent = domParentFiber.dom
   if(fiber.effectTag === EFFECT_TAG_INSERTION && fiber.dom != null) {
-    console.log(fiber, domParent);
     domParent.appendChild(fiber.dom);
   } else if(fiber.effectTag === EFFECT_TAG_DELETION) {
     commitDeletion(fiber, domParent);

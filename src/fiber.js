@@ -11,7 +11,8 @@ function createFiberInsert(element, workInProgressFiber){
     parent: workInProgressFiber,
     dom: null,
     alternate: null,
-    effectTag: EFFECT_TAG_INSERTION
+    effectTag: EFFECT_TAG_INSERTION,
+    effects: []
   }
 }
 
@@ -22,7 +23,8 @@ function createFiberUpdate(oldFiber, element, workInProgressFiber){
     parent: workInProgressFiber,
     dom: oldFiber.parent,
     alternate: oldFiber,
-    effectTag: EFFECT_TAG_UPDATE
+    effectTag: EFFECT_TAG_UPDATE,
+    effects: []
   }
 }
 
