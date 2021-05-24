@@ -18,3 +18,16 @@ This is a naive and simple implementation, so you shouldn't expect complex featu
 1. Install npm
 2. Clone the repo
 3. Run `npm start` (changes in src/index.js will auto refresh your page)
+
+## Glossary
+
+- Reconciliation: TODO
+- Fiber: TODO
+- Commit: TODO
+- requestIdleCallback: TODO
+- Effects: TODO
+- Host Component: TODO
+
+## Overview
+
+-- Diagram of flow: TODO
