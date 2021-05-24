@@ -4,7 +4,7 @@ const {
 const {
   createFiberInsert,
   createFiberUpdate,
-} = require('./fiber');
+} = require('./fiberHelpers');
 
 function reconcilerChildren(workInProgressFiber, elements){
   let oldFiber = 

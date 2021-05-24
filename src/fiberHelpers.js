@@ -3,7 +3,6 @@ const {
   EFFECT_TAG_INSERTION,
 } = require('./effects');
 
-
 function createFiberInsert(element, workInProgressFiber){
   return {
     type: element.type,

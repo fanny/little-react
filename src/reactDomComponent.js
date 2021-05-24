@@ -15,8 +15,15 @@ const isProperty = key =>
 const isNew = (prev, next) => key =>
   prev[key] !== next[key]
 const isGone = (_prev, next) => key => !(key in next)
+
 function updateDom(dom, prevProps, nextProps){
-  //Remove old or changed event listeners
+  removeOldEventListeners(dom, prevProps, nextProps)
+  removeOldProperties(dom, prevProps, nextProps)
+  addProperties(dom, prevProps, nextProps)
+  addEventListeners(dom, prevProps, nextProps)
+}
+
+function removeOldEventListeners(dom, prevProps, nextProps){
   Object.keys(prevProps)
     .filter(isEvent)
     .filter(
@@ -33,36 +40,39 @@ function updateDom(dom, prevProps, nextProps){
         prevProps[name]
       )
     })
-  
-  // Remove old properties
-  Object.keys(prevProps)
-    .filter(isProperty)
-    .filter(isGone(prevProps, nextProps))
-    .forEach(name => {
-      dom[name] = ""
-    })
-  
-  // Set new or changed properties
-  Object.keys(nextProps)
-    .filter(isProperty)
-    .filter(isNew(prevProps, nextProps))
-    .forEach(name => {
-      dom[name] = nextProps[name]
-    })
+}
 
-  // Add event listeners
+function addEventListeners(dom, prevProps, nextProps){
   Object.keys(nextProps)
-    .filter(isEvent)
-    .filter(isNew(prevProps, nextProps))
-    .forEach(name => {
-      const eventType = name
-        .toLowerCase()
-        .substring(2)
-      dom.addEventListener(
-        eventType,
-        nextProps[name]
-      )
-    })  
+  .filter(isEvent)
+  .filter(isNew(prevProps, nextProps))
+  .forEach(name => {
+    const eventType = name
+      .toLowerCase()
+      .substring(2)
+    dom.addEventListener(
+      eventType,
+      nextProps[name]
+    )
+  })
+}
+
+function removeOldProperties(dom, prevProps, nextProps){
+  Object.keys(prevProps)
+  .filter(isProperty)
+  .filter(isGone(prevProps, nextProps))
+  .forEach(name => {
+    dom[name] = ""
+  })
+}
+
+function addProperties(dom, prevProps, nextProps){
+  Object.keys(nextProps)
+  .filter(isProperty)
+  .filter(isNew(prevProps, nextProps))
+  .forEach(name => {
+    dom[name] = nextProps[name]
+  })
 }
 
 module.exports = {

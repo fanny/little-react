@@ -1,6 +1,6 @@
-const reactDom = require("./reactDomComponent");
+const reactDom = require("./reactDOMComponent");
 const { createSchedulerEngineInstance, getSchedulerEngineInstance } = require("./reactSchedulerEngine");
-const { performUnitOfWork } = require("./scheduler");
+const { performUnitOfWork } = require("./fiberWorkUnit");
 
 let currentRoot = null
 let workInProgressRoot = null

@@ -18,7 +18,6 @@ class SchedulerEngine {
   
       requestIdleCallback(jobHelper.bind(this));
     }
-    
     requestIdleCallback(jobHelper.bind(this));
   }
 

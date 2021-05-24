@@ -1,11 +1,11 @@
-const { updateDom } = require("./reactDomComponent")
+const { updateDom } = require("./reactDOMComponent")
 const {
   EFFECT_TAG_UPDATE,
   EFFECT_TAG_INSERTION,
   EFFECT_TAG_DELETION
 } = require('./effects');
 
-function commitRoot(fiber, currentRoot) {
+function commit(fiber, currentRoot) {
   fiber.effects.forEach(commitWork)
   commitWork(fiber.child)
   currentRoot = fiber
@@ -46,5 +46,5 @@ function commitDeletion(fiber, domParent) {
 }
 
 module.exports = {
-  commitRoot
+  commit
 }

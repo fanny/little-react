@@ -1,5 +1,5 @@
-const { createDom } = require("./reactDomComponent");
-const { commitRoot } = require("./commit");
+const { createDom } = require("./reactDOMComponent");
+const { commit } = require("./commit");
 const { reconcilerChildren } = require("./reconciler");
 
 function performUnitOfWork(fiber, currentRoot) {
@@ -18,7 +18,7 @@ function performUnitOfWork(fiber, currentRoot) {
 
   let nextFiber = fiber
   while(nextFiber) {
-    commitRoot(nextFiber, currentRoot)
+    commit(nextFiber, currentRoot)
     if (nextFiber.sibling) {
       return nextFiber.sibling
     }
