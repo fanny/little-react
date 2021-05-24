@@ -1,6 +1,6 @@
 # little-react
 
-:construction: Work In Progres :construction:
+:construction: Work In Progress :construction:
 
 This is my own implementation of [React Lib](https://github.com/facebook/react/) for educational purposes. I tried to follow the same terminology that react core uses in their source code, to facilitate my understanding when navigating in their files.
 
